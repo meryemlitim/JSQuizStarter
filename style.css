@@ -1,0 +1,49 @@
+body{
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: #f0f0f0;
+    font-family: 'Poppins', sans-serif;
+    align-items: center;
+
+}
+.quiz-start{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.js-img{
+    width: 60px;
+    height: 60px;
+    border-radius: 40%;
+    object-fit: cover;
+}
+.start-btn{
+    width: 170px;
+    height: 40px;
+    border: 1px balck solid;
+    background-color: rgb(240, 219, 79);
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 8px;  
+    color: black; 
+    cursor: pointer;
+}
+.start-btn:hover{
+    border: 2px rgb(228, 201, 25) solid;
+    background-color: black;
+    color:rgb(240, 219, 79) ;
+
+}
+.quiz-title{
+cursor: pointer;
+font-size: 40px;
+
+}
+.quiz-pragh{
+ cursor: pointer;
+ font-size: 20px;
+ color: black;
+}
