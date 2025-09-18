@@ -195,9 +195,11 @@ quizContent=document.querySelector(".quiz-content");
  let currentQuestion=0;
  let timerId;
  let timeLeft = 5;
+
 function start(currentTopic){
    currentQuestion = 0; 
-  startQuizPage.style.display='none';
+  // startQuizPage.style.display='none';
+
   chooseUsernamePage.style.display='flex';
 
 
@@ -218,22 +220,22 @@ function start(currentTopic){
 
            quizstarbtn.addEventListener('click',()=>{
             chooseUsernamePage.style.display='none';
-           quizStart(currentTopic);
+    quizHome(currentTopic);
   
     })
     }
  
-  })
-   
+  })   
 }
  
 function quizStart(currentTopic){
+  startQuizPage.style.display="none";
  if(timerId){
   clearInterval(timerId);
  }
- timeLeft=5;
+  timeLeft=5;
   contentQuizPage.style.display='flex';
-    quizContent.innerHTML =
+  quizContent.innerHTML =
      `
   <div class="quizContent-header">
     <h3>${currentQuestion+1}/${quizData[currentTopic].questions.length}</h3>
@@ -247,18 +249,19 @@ function quizStart(currentTopic){
       ${quizData[currentTopic].questions[currentQuestion].options.map(op=>{
         return `
         <label>
-        <input type="radio" name="q1" value="${op}" />
+        <input type="checkbox" name="q1" value="${op}" />
       ${op}
       </label>
         `;
       }).join("")
       }
     </div>
-     <div class="quizContent-footer">
+    <div class="quizContent-footer">
         <button class="next-btn" onclick="nextQuestion(${currentTopic})">NEXT</button>
-      </div>
+        <button class="submit-btn">submit</button>
+    </div>
   </div>
-
+  
   
     `;
 
@@ -268,13 +271,17 @@ function quizStart(currentTopic){
                   timeLeft--;
                   if(timeLeft<0){
                    clearInterval(timerId);
-                    nextQuestion(currentTopic) 
+            if(currentQuestion+1 === quizData[currentTopic].questions.length){
+            contentQuizPage.style.display="none";
+            document.querySelector(".result-page").style.display="flex";
+        }else{
+
+          nextQuestion(currentTopic)  
+        }
                   }
                  }
-      
+                      
               ,1000);
-    
-
 }
 
 
@@ -285,7 +292,13 @@ function quizStart(currentTopic){
       }
         console.log(currentQuestion);
         if(currentQuestion+1 === quizData[currentTopic].questions.length){
-            document.querySelector(".next-btn").innerHTML="Submit"
+            document.querySelector(".next-btn").style.display="none";
+            document.querySelector(".submit-btn").style.display="block";
+            document.querySelector(".submit-btn").addEventListener('click',()=>{
+            contentQuizPage.style.display="none";
+            document.querySelector(".result-page").style.display="flex";
+              
+            })
         }else{
         currentQuestion++;
         // console.log(currentQuestion);
@@ -307,7 +320,7 @@ return `
 
 function quizHome(currentTopic){
     // console.log(currentTopic);
-    chooseTopicPage.style.display='none';
+    // chooseTopicPage.style.display='none';
     startQuizPage.style.display='flex';
     startQuizPage.innerHTML=`
      <div class="quiz-start">
@@ -320,7 +333,7 @@ function quizHome(currentTopic){
         <p class="quiz-pragh">
           ${quizTopic[currentTopic].topicPragh}
         </p>
-        <button class="start-btn" onclick="start(${currentTopic})" style="background-color:${quizTopic[currentTopic].color} ;">START</button>
+        <button class="start-btn" onclick="quizStart(${currentTopic})" style="background-color:${quizTopic[currentTopic].color} ;">START</button>
       </div>
     `;
 }
@@ -328,6 +341,9 @@ function quizHome(currentTopic){
 function ErabitaTopic(topicIndex){
     // console.log(topicIndex);
     const currentTopic = topicIndex;
-    quizHome(currentTopic);
+    // quizHome(currentTopic);
+    chooseTopicPage.style.display='none';
+
+    start(currentTopic);
 }
 
