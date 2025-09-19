@@ -5,52 +5,52 @@ const quizData = [
      {
     question: "What does 'JS' stand for?",
     options: ["JavaScript", "JavaSoup", "JustScript", "JScript"],
-    answer: "0"
+    answer: [0]
   },
   {
     question: "Which symbol is used for comments in JS?",
     options: ["//", "/* */", "#"],
-    answer: "0"
+    answer: [0]
   },
   {
     question: "Which method logs output in JS?",
     options: ["console.log()", "print()", "alert()", "document.write()"],
-    answer: "0"
+    answer: [0]
   },
   {
     question: "Which keyword declares a variable that can’t be reassigned?",
     options: ["var", "let", "const", "static"],
-    answer: "2"
+    answer: [2]
   },
   {
     question: "What is the output of: `typeof []`?",
     options: ["array", "object", "list", "undefined"],
-    answer: "1"
+    answer: [1]
   },
   {
     question: "Which operator is used for strict equality?",
     options: ["==", "=", "===", "!="],
-    answer: "2"
+    answer: [2]
   },
   {
     question: "How do you create a function in JS?",
     options: ["function myFunc() {}", "func myFunc() {}", "def myFunc() {}", "create function myFunc() {}"],
-    answer: "0"
+    answer: [0]
   },
   {
     question: "Which method converts a JSON string to an object?",
     options: ["JSON.parse()", "JSON.stringify()", "JSON.object()", "JSON.toObject()"],
-    answer: "0"
+    answer: [0]
   },
   {
     question: "Which event triggers when a user clicks on an element?",
     options: ["onclick", "onhover", "onchange", "onfocus"],
-    answer: "0"
+    answer: [0]
   },
   {
     question: "Which of these is NOT a JavaScript data type?",
     options: ["Number", "String", "Boolean", "Character"],
-    answer: "3"
+    answer: [3]
   }
   ]
  },
@@ -188,14 +188,17 @@ const quizTopic = [
     
 }
 ];
+
+const userAnswers = [];
+const UserQuizReview = [];
 const startQuizPage=document.querySelector(".quizStart-page");
 const contentQuizPage=document.querySelector(".quizContent-page");
 const chooseUsernamePage=document.querySelector(".chooseUsername-page")
 quizContent=document.querySelector(".quiz-content");
  let currentQuestion=0;
  let timerId;
- let timeLeft = 5;
-
+ let timeLeft = 10;
+ let usernameName;
 function start(currentTopic){
    currentQuestion = 0; 
   // startQuizPage.style.display='none';
@@ -217,12 +220,13 @@ function start(currentTopic){
           
     }else{
           quizstarbtn.style.display="block";
-
-           quizstarbtn.addEventListener('click',()=>{
-            chooseUsernamePage.style.display='none';
-    quizHome(currentTopic);
+          quizstarbtn.addEventListener('click',()=>{
+          chooseUsernamePage.style.display='none';
+          usernameName= UsernameInput.value;
+          console.log(usernameName);
+          quizHome(currentTopic);
   
-    })
+          })
     }
  
   })   
@@ -246,12 +250,12 @@ function quizStart(currentTopic){
   
     <h1 class="quiz-question">${quizData[currentTopic].questions[currentQuestion].question}</h1>
     <div class="quiz-options">
-      ${quizData[currentTopic].questions[currentQuestion].options.map(op=>{
+      ${quizData[currentTopic].questions[currentQuestion].options.map((op,index)=>{
         return `
         <label>
-        <input type="checkbox" name="q1" value="${op}" />
+        <input type="checkbox" class="anwser-input" name="q${currentQuestion+1}" value="${index}" />
       ${op}
-      </label>
+      </label> 
         `;
       }).join("")
       }
@@ -265,17 +269,19 @@ function quizStart(currentTopic){
   
     `;
 
+    document.querySelectorAll(".anwser-input").forEach(input => {
+      input.addEventListener('change', handleAnswers);
+    });
      timerId=setInterval(()=>{
                   console.log("Time left:", timeLeft); 
                   document.getElementById('timer').textContent= `Timer:${timeLeft}s`; 
                   timeLeft--;
-                  if(timeLeft<0){
+            if(timeLeft<0){
                    clearInterval(timerId);
             if(currentQuestion+1 === quizData[currentTopic].questions.length){
             contentQuizPage.style.display="none";
             document.querySelector(".result-page").style.display="flex";
         }else{
-
           nextQuestion(currentTopic)  
         }
                   }
@@ -284,6 +290,24 @@ function quizStart(currentTopic){
               ,1000);
 }
 
+
+function handleAnswers(e){
+  const selectedValue = e.target.value;
+  // const questionIndex = currentQuestion;
+  
+  console.log(`Question ${currentQuestion + 1}: Selected answer index ${selectedValue}`);
+  
+  // userAnswers[questionIndex] = selectedValue;
+  
+  userAnswers.push(
+    {
+      Question : currentQuestion,
+      ChooenAnswer : selectedValue,
+      
+    }
+  );
+
+}
 
     function nextQuestion(currentTopic ){
       if(timerId){
@@ -295,10 +319,16 @@ function quizStart(currentTopic){
             document.querySelector(".next-btn").style.display="none";
             document.querySelector(".submit-btn").style.display="block";
             document.querySelector(".submit-btn").addEventListener('click',()=>{
+            UserQuizReview.push({
+              username : usernameName,
+              topic : currentTopic,
+              answers : userAnswers
+            });
             contentQuizPage.style.display="none";
             document.querySelector(".result-page").style.display="flex";
-              
-            })
+            console.log("result:", UserQuizReview);  
+                                                 
+            }) 
         }else{
         currentQuestion++;
         // console.log(currentQuestion);
