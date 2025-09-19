@@ -60,52 +60,52 @@ const quizData = [
      {
     question: "What does the kanji 木 mean?",
     options: ["Tree", "Water", "Fire", "Mountain"],
-    answer: "0"
+    answer: "Tree"
   },
   {
     question: "What does the kanji 水 mean?",
     options: ["Fire", "Water", "Earth", "Sky"],
-    answer: "1"
+    answer: "Water"
   },
   {
     question: "What does the kanji 火 mean?",
     options: ["Fire", "Wind", "Light", "Sun"],
-    answer: "0"
+    answer: "Fire"
   },
   {
     question: "What does the kanji 山 mean?",
     options: ["River", "Mountain", "House", "Sky"],
-    answer: "1"
+    answer: "Mountain"
   },
   {
     question: "What does the kanji 川 mean?",
     options: ["Mountain", "Tree", "River", "Path"],
-    answer: "2"
+    answer: "River"
   },
   {
     question: "What does the kanji 人 mean?",
     options: ["Person", "Child", "Sun", "Hand"],
-    answer: "0"
+    answer: "Person"
   },
   {
     question: "What does the kanji 日 mean?",
     options: ["Sun/Day", "Moon", "Star", "Fire"],
-    answer: "0"
+    answer: "Sun/Day"
   },
   {
     question: "What does the kanji 月 mean?",
     options: ["Moon/Month", "Star", "Sky", "Night"],
-    answer: "0"
+    answer: "Moon/Month"
   },
   {
     question: "What does the kanji 口 mean?",
     options: ["Eye", "Mouth", "Ear", "Hand"],
-    answer: "1"
+    answer: "Mouth"
   },
   {
     question: "What does the kanji 学 mean?",
     options: ["School/Learning", "Work", "Language", "Teacher"],
-    answer: "0"
+    answer: "School/Learning"
   }
   ]
  },
@@ -253,7 +253,7 @@ function quizStart(currentTopic){
       ${quizData[currentTopic].questions[currentQuestion].options.map((op,index)=>{
         return `
         <label>
-        <input type="checkbox" class="anwser-input" name="q${currentQuestion+1}" value="${index}" />
+        <input type="checkbox" class="anwser-input" name="q${currentQuestion+1}" value=" ${op}" />
       ${op}
       </label> 
         `;
@@ -292,20 +292,16 @@ function quizStart(currentTopic){
 
 
 function handleAnswers(e){
-  const selectedValue = e.target.value;
-  // const questionIndex = currentQuestion;
+ const selectedValue = e.target.value.trim(); 
   
   console.log(`Question ${currentQuestion + 1}: Selected answer index ${selectedValue}`);
   
   // userAnswers[questionIndex] = selectedValue;
   
-  userAnswers.push(
-    {
-      Question : currentQuestion,
-      ChooenAnswer : selectedValue,
-      
-    }
-  );
+ userAnswers[currentQuestion] = {
+    Question: currentQuestion,
+    ChosenAnswer: selectedValue
+  };
 
 }
 
@@ -326,8 +322,9 @@ function handleAnswers(e){
             });
             contentQuizPage.style.display="none";
             document.querySelector(".result-page").style.display="flex";
-            console.log("result:", UserQuizReview);  
-                                                 
+            console.log("result:", UserQuizReview); 
+            
+            checkAnwsers(userAnswers,currentTopic);                                                
             }) 
         }else{
         currentQuestion++;
@@ -375,5 +372,70 @@ function ErabitaTopic(topicIndex){
     chooseTopicPage.style.display='none';
 
     start(currentTopic);
+}
+
+
+// function checkAnwsers(userAnswers,currentTopic){
+//   const correction = document.querySelector('.corrections');
+//   correction.innerHTML = ""; 
+// quizData.forEach(topic => {
+//   if(topic.id === currentTopic){
+//     console.log("questions of the current topic:", topic.questions);
+//    topic.questions.forEach((q, index) => {
+//   const userAnswer = userAnswers[index];
+
+//   if (userAnswer === q.answer) {
+//      const userAnswer = userAnswers[index]?.ChosenAnswer;
+//     correction.innerHTML += `
+//       <h3>${q.question}:</h3>
+//       <h3 style="color:green">✅ You answered: ${userAnswer} (Correct)</h3>
+//     `;
+//   } else {
+//     correction.innerHTML += `
+//       <h3>${q.question}:</h3>
+//       <h3 style="color:red">❌ You answered: ${userAnswer}</h3>
+//       <h3>Correct answer: ${q.answer}</h3>
+//     `;
+//   }
+// });
+//   }
+// })
+
+
+
+// }
+
+
+function checkAnwsers(userAnswers, currentTopic) {
+  const correction = document.querySelector('.corrections');
+  correction.innerHTML = ""; 
+  let score = 0;
+  quizData.forEach(topic => {
+    if (topic.id === currentTopic) {
+      topic.questions.forEach((q, index) => {
+        const userAnswer = userAnswers[index]?.ChosenAnswer;
+        
+        if (userAnswer === q.answer) {
+          score=score+1;
+          document.querySelector(".score").textContent= `Score: ${score}`;
+          correction.innerHTML += `
+            <h3>${q.question}:</h3>
+            <h3 style="color:green" class="correc">✅ You answered: ${userAnswer} (Correct)</h3>
+          `;
+        } else {
+          correction.innerHTML += `
+            <h3>${q.question}:</h3>
+            <h3 style="color:red" class="correc">❌ You answered: ${userAnswer || "No answer"}</h3>
+            <h3 class="correc">Correct answer: ${q.answer}</h3>
+          `;
+        }
+      });
+    }
+  });
+}
+
+function backHome(){
+  document.querySelector('.result-page').style.display="none";
+  document.querySelector('.chooseTopic-page').style.display="flex";
 }
 

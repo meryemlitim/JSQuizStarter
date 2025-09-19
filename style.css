@@ -220,3 +220,22 @@ font-size: 20px;
     display: none;
 } */
 
+.correc{
+    font-size: 20px;
+    
+}
+
+.home-btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s ease;
+}
+
+.home-btn:hover {
+  background-color: #45a049;
+}
