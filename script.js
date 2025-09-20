@@ -409,15 +409,15 @@ function ErabitaTopic(topicIndex){
 function checkAnwsers(userAnswers, currentTopic) {
   const correction = document.querySelector('.corrections');
   correction.innerHTML = ""; 
-  let score = 0;
+  let score = 1;
   quizData.forEach(topic => {
     if (topic.id === currentTopic) {
       topic.questions.forEach((q, index) => {
+        document.querySelector(".score").textContent= `Score: ${score}`;      
         const userAnswer = userAnswers[index]?.ChosenAnswer;
-        
+       feedback(score);
         if (userAnswer === q.answer) {
           score=score+1;
-          document.querySelector(".score").textContent= `Score: ${score}`;
           correction.innerHTML += `
             <h3>${q.question}:</h3>
             <h3 style="color:green" class="correc">✅ You answered: ${userAnswer} (Correct)</h3>
@@ -439,3 +439,11 @@ function backHome(){
   document.querySelector('.chooseTopic-page').style.display="flex";
 }
 
+function feedback(score){
+   if(score>=10){
+          document.querySelector('.feedback').textContent=`Feedback: great result keep going`;
+        }else{
+          document.querySelector('.feedback').textContent=`Feedback: you need more practice dont give up`;
+
+        }
+}
