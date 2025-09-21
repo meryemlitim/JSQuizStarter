@@ -60,52 +60,56 @@ const quizData = [
      {
     question: "What does the kanji 木 mean?",
     options: ["Tree", "Water", "Fire", "Mountain"],
-    answer: "Tree"
+    answer: ["Tree"]
   },
   {
     question: "What does the kanji 水 mean?",
     options: ["Fire", "Water", "Earth", "Sky"],
-    answer: "Water"
+    answer: ["Water"]
+
   },
   {
     question: "What does the kanji 火 mean?",
     options: ["Fire", "Wind", "Light", "Sun"],
-    answer: "Fire"
+    answer: ["Fire"]
+
   },
   {
     question: "What does the kanji 山 mean?",
     options: ["River", "Mountain", "House", "Sky"],
-    answer: "Mountain"
+    answer: ["Mountain"]
   },
   {
     question: "What does the kanji 川 mean?",
     options: ["Mountain", "Tree", "River", "Path"],
-    answer: "River"
+    answer: ["River"]
+
   },
   {
     question: "What does the kanji 人 mean?",
     options: ["Person", "Child", "Sun", "Hand"],
-    answer: "Person"
+    answer: ["Person"]
   },
   {
     question: "What does the kanji 日 mean?",
-    options: ["Sun/Day", "Moon", "Star", "Fire"],
-    answer: "Sun/Day"
+    options: ["Sun", "Day", "Star", "Fire"],
+    answer: ["Sun","Day"]
+    
   },
   {
     question: "What does the kanji 月 mean?",
-    options: ["Moon/Month", "Star", "Sky", "Night"],
-    answer: "Moon/Month"
+    options: ["Moon", "Month", "Sky", "Night"],
+    answer: ["Moon","Month"] 
   },
   {
     question: "What does the kanji 口 mean?",
     options: ["Eye", "Mouth", "Ear", "Hand"],
-    answer: "Mouth"
+    answer: ["Mouth"]      
   },
   {
     question: "What does the kanji 学 mean?",
-    options: ["School/Learning", "Work", "Language", "Teacher"],
-    answer: "School/Learning"
+    options: ["School", "Work", "Language", "Learning"],
+    answer: ["School","Learning"]  
   }
   ]
  },
@@ -201,7 +205,6 @@ quizContent=document.querySelector(".quiz-content");
  let usernameName;
 function start(currentTopic){
    currentQuestion = 0; 
-  // startQuizPage.style.display='none';
 
   chooseUsernamePage.style.display='flex';
 
@@ -239,6 +242,8 @@ function quizStart(currentTopic){
  }
   timeLeft=5;
   contentQuizPage.style.display='flex';
+  let correctAnwer_length= quizData[currentTopic].questions[currentQuestion].answer.length;
+  console.log("correctAnwer_length", correctAnwer_length);
   quizContent.innerHTML =
      `
   <div class="quizContent-header">
@@ -253,7 +258,7 @@ function quizStart(currentTopic){
       ${quizData[currentTopic].questions[currentQuestion].options.map((op,index)=>{
         return `
         <label>
-        <input type="checkbox" class="anwser-input" name="q${currentQuestion+1}" value=" ${op}" />
+        <input type="checkbox" class="anwser-input" name="q${currentQuestion+1}" value="${op}"  />
       ${op}
       </label> 
         `;
@@ -269,9 +274,11 @@ function quizStart(currentTopic){
   
     `;
 
-    document.querySelectorAll(".anwser-input").forEach(input => {
-      input.addEventListener('change', handleAnswers);
-    });
+  document.querySelectorAll(".anwser-input").forEach(input => {
+  
+  input.addEventListener('change', (e) => handleAnswers(e, correctAnwer_length));
+});
+
      timerId=setInterval(()=>{
                   console.log("Time left:", timeLeft); 
                   document.getElementById('timer').textContent= `Timer:${timeLeft}s`; 
@@ -290,18 +297,27 @@ function quizStart(currentTopic){
               ,1000);
 }
 
+ 
+function handleAnswers(e,correctAnwer_length){
+ const checkedCount = document.querySelectorAll('.anwser-input:checked').length;
+// if(checkedCount === correctAnwer_length){
+//   document.querySelectorAll(".anwser-input").forEach(input => {
+//     input.disabled = true;
+//   })
 
-function handleAnswers(e){
- const selectedValue = e.target.value.trim(); 
+// }
+const SelectedAnswer = [];
+   document.querySelectorAll('.anwser-input:checked').forEach(input => {
+    SelectedAnswer.push(input.value.trim());
+  });
+
   
-  console.log(`Question ${currentQuestion + 1}: Selected answer index ${selectedValue}`);
   
-  // userAnswers[questionIndex] = selectedValue;
-  
- userAnswers[currentQuestion] = {
+  userAnswers[currentQuestion] = {
     Question: currentQuestion,
-    ChosenAnswer: selectedValue
+    ChosenAnswer: SelectedAnswer
   };
+  console.log(`Question ${currentQuestion + 1}: Selected answer index ${SelectedAnswer}`);  
 
 }
 
@@ -315,11 +331,7 @@ function handleAnswers(e){
             document.querySelector(".next-btn").style.display="none";
             document.querySelector(".submit-btn").style.display="block";
             document.querySelector(".submit-btn").addEventListener('click',()=>{
-            UserQuizReview.push({
-              username : usernameName,
-              topic : currentTopic,
-              answers : userAnswers
-            });
+          
             contentQuizPage.style.display="none";
             document.querySelector(".result-page").style.display="flex";
             console.log("result:", UserQuizReview); 
@@ -328,7 +340,6 @@ function handleAnswers(e){
             }) 
         }else{
         currentQuestion++;
-        // console.log(currentQuestion);
         quizStart(currentTopic);
         }
     }
@@ -346,8 +357,7 @@ return `
 }).join("");
 
 function quizHome(currentTopic){
-    // console.log(currentTopic);
-    // chooseTopicPage.style.display='none';
+    
     startQuizPage.style.display='flex';
     startQuizPage.innerHTML=`
      <div class="quiz-start">
@@ -375,65 +385,69 @@ function ErabitaTopic(topicIndex){
 }
 
 
-// function checkAnwsers(userAnswers,currentTopic){
-//   const correction = document.querySelector('.corrections');
-//   correction.innerHTML = ""; 
-// quizData.forEach(topic => {
-//   if(topic.id === currentTopic){
-//     console.log("questions of the current topic:", topic.questions);
-//    topic.questions.forEach((q, index) => {
-//   const userAnswer = userAnswers[index];
-
-//   if (userAnswer === q.answer) {
-//      const userAnswer = userAnswers[index]?.ChosenAnswer;
-//     correction.innerHTML += `
-//       <h3>${q.question}:</h3>
-//       <h3 style="color:green">✅ You answered: ${userAnswer} (Correct)</h3>
-//     `;
-//   } else {
-//     correction.innerHTML += `
-//       <h3>${q.question}:</h3>
-//       <h3 style="color:red">❌ You answered: ${userAnswer}</h3>
-//       <h3>Correct answer: ${q.answer}</h3>
-//     `;
-//   }
-// });
-//   }
-// })
-
-
-
-// }
 
 
 function checkAnwsers(userAnswers, currentTopic) {
   const correction = document.querySelector('.corrections');
   correction.innerHTML = ""; 
-  let score = 1;
+  let score = 0; 
+  
   quizData.forEach(topic => {
     if (topic.id === currentTopic) {
       topic.questions.forEach((q, index) => {
-        document.querySelector(".score").textContent= `Score: ${score}`;      
-        const userAnswer = userAnswers[index]?.ChosenAnswer;
-       feedback(score);
-        if (userAnswer === q.answer) {
-          score=score+1;
+        const userAnswer = userAnswers[index]?.ChosenAnswer || [];
+        const correctAnswer = q.answer;
+        
+        
+        let isCorrect = false;
+        
+        if (Array.isArray(correctAnswer)) {
+          isCorrect = correctAnswer.length === userAnswer.length && 
+                     correctAnswer.every(ans => userAnswer.includes(ans));
+        } else {
+          isCorrect = userAnswer.length === 1 && userAnswer[0] === correctAnswer;
+        }
+        
+        if (isCorrect) {
+          score++;
           correction.innerHTML += `
             <h3>${index+1}-${q.question}:</h3>
-            <h3 style="color:green" class="correc">You answered: ${userAnswer} (Correct)</h3>
+            <h3 style="color:green" class="correc">You answered: ${Array.isArray(userAnswer) ? userAnswer.join(", ") : userAnswer} (Correct)</h3>
           `;
         } else {
           correction.innerHTML += `
             <h3>${index+1}-${q.question}:</h3>
-            <h3 style="color:red" class="correc">You answered: ${userAnswer || "No answer"}</h3>
-            <h3 class="correc">Correct answer: ${q.answer}</h3>
+            <h3 style="color:red" class="correc">You answered: ${Array.isArray(userAnswer) ? userAnswer.join(", ") : userAnswer || "No answer"}</h3>
+            <h3 class="correc">Correct answer: ${Array.isArray(correctAnswer) ? correctAnswer.join(", ") : correctAnswer}</h3>
           `;
         }
       });
+
+      
+      
+      document.querySelector(".score").textContent = `Score: ${score}`;
+      feedback(score);
     }
   });
-}
+  let now = new Date();
+  let dateTime = now.toLocaleString();
+  console.log("dateTime",dateTime); 
 
+  
+ let UserQuizReview = JSON.parse(localStorage.getItem("UserQuizReview")) || [];
+  let newResult ={
+  username : usernameName,
+  date : dateTime,
+  topic : currentTopic,
+  answers : userAnswers,
+  score : score
+  };
+
+  UserQuizReview.push(newResult);
+  console.log("🔪🙂",UserQuizReview);
+
+localStorage.setItem("UserQuizReview", JSON.stringify(UserQuizReview));
+}
 
 
 
