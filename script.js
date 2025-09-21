@@ -445,7 +445,7 @@ function checkAnwsers(userAnswers, currentTopic) {
 
   UserQuizReview.push(newResult);
   console.log("🔪🙂",UserQuizReview);
-
+  
 localStorage.setItem("UserQuizReview", JSON.stringify(UserQuizReview));
 }
 

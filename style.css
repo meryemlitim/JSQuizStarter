@@ -233,6 +233,8 @@ font-size: 20px;
   cursor: pointer;
   font-size: 16px;
   transition: 0.3s ease;
+  margin-top: 40px;
+  margin-bottom: 40px;
 }
 
 .home-btn:hover {
@@ -430,3 +432,43 @@ font-size: 20px;
 }
 
 
+/* responsive */
+
+
+@media (max-width: 426px) {
+.chooseTopic-page{
+    flex-direction: column;
+    width: 427px;
+}
+
+.quiz-pragh{
+    font-size: 16px;
+}
+
+.quiz-title{
+    font-size: 32px;
+}
+.start-btn{
+    width: 138px;
+    font-size: 18px;
+}
+.quiz-content{
+    width: 60vh;
+}
+.quizContent-header{
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.Anwser-result{
+    width: 60vh;
+}
+.result-page h3{
+    font-size:16px ;
+}
+.score{
+    font-size: 18px;
+}
+}
