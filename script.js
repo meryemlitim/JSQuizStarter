@@ -205,7 +205,7 @@ function start(currentTopic){
 
   chooseUsernamePage.style.display='flex';
 
-
+ 
   chooseUsernamePage.innerHTML=`
       <h2>Enter Your Username</h2>
       <input class="Username" type="text">
@@ -419,13 +419,13 @@ function checkAnwsers(userAnswers, currentTopic) {
         if (userAnswer === q.answer) {
           score=score+1;
           correction.innerHTML += `
-            <h3>${q.question}:</h3>
-            <h3 style="color:green" class="correc">✅ You answered: ${userAnswer} (Correct)</h3>
+            <h3>${index+1}-${q.question}:</h3>
+            <h3 style="color:green" class="correc">You answered: ${userAnswer} (Correct)</h3>
           `;
         } else {
           correction.innerHTML += `
-            <h3>${q.question}:</h3>
-            <h3 style="color:red" class="correc">❌ You answered: ${userAnswer || "No answer"}</h3>
+            <h3>${index+1}-${q.question}:</h3>
+            <h3 style="color:red" class="correc">You answered: ${userAnswer || "No answer"}</h3>
             <h3 class="correc">Correct answer: ${q.answer}</h3>
           `;
         }
@@ -434,16 +434,28 @@ function checkAnwsers(userAnswers, currentTopic) {
   });
 }
 
+
+
+
 function backHome(){
   document.querySelector('.result-page').style.display="none";
   document.querySelector('.chooseTopic-page').style.display="flex";
 }
 
-function feedback(score){
-   if(score>=10){
-          document.querySelector('.feedback').textContent=`Feedback: great result keep going`;
-        }else{
-          document.querySelector('.feedback').textContent=`Feedback: you need more practice dont give up`;
+function feedback(score) {
+  let message = '';
 
-        }
+  if (score === 10) {
+    message = `🏆 Feedback: ${usernameName}, Perfect score! You're amazing! 🌟`;
+  } else if (score >= 8) {
+    message = `🔥 Feedback: ${usernameName}, Great job! Almost perfect! 👏`;
+  } else if (score >= 6) {
+    message = `😊 Feedback: ${usernameName}, Good work! Keep it up! 💪`;
+  } else if (score >= 4) {
+    message = `📚 Feedback: ${usernameName}, Not bad! You need more practice! 🎯`;
+  } else {
+    message = `😅 Feedback: ${usernameName}, Don't give up! Practice makes perfect! 💡`;
+  }
+
+  document.querySelector('.feedback').textContent = message;
 }
